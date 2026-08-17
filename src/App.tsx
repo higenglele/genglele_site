@@ -26,10 +26,9 @@ const cardEase = [0.22, 1, 0.36, 1] as const;
 type WordsPullUpProps = {
   text: string;
   className?: string;
-  showAsterisk?: boolean;
 };
 
-function WordsPullUp({ text, className = "", showAsterisk = false }: WordsPullUpProps) {
+function WordsPullUp({ text, className = "" }: WordsPullUpProps) {
   const ref = useRef<HTMLSpanElement>(null);
   const isInView = useInView(ref, { once: true });
   const words = text.split(" ");
@@ -45,9 +44,6 @@ function WordsPullUp({ text, className = "", showAsterisk = false }: WordsPullUp
             transition={{ duration: 0.8, delay: index * 0.08, ease: easeOut }}
           >
             {word}
-            {showAsterisk && index === words.length - 1 && (
-              <span className="absolute -right-[0.3em] top-[0.65em] text-[0.31em]">*</span>
-            )}
           </motion.span>
           {index < words.length - 1 && <span>&nbsp;</span>}
         </span>
@@ -245,10 +241,10 @@ function Hero() {
         <div className="absolute bottom-0 left-0 right-0 z-10 grid grid-cols-12 items-end gap-y-5 px-3 pb-4 sm:px-5 sm:pb-5 md:px-8 md:pb-7">
           <div className="col-span-12 lg:col-span-8">
             <h1
-              className="text-[26vw] font-medium leading-[0.85] tracking-[-0.07em] text-[#E1E0CC] sm:text-[24vw] md:text-[22vw] lg:text-[20vw] xl:text-[19vw] 2xl:text-[20vw]"
+              className="text-[22vw] font-medium leading-[0.82] tracking-[-0.07em] text-[#E1E0CC] sm:text-[20vw] md:text-[18vw] lg:text-[min(16vw,28vh)]"
               aria-label="耿乐"
             >
-              <WordsPullUp text="耿乐" showAsterisk />
+              <WordsPullUp text="耿乐" />
             </h1>
           </div>
 
