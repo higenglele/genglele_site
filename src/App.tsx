@@ -1,225 +1,387 @@
-import { FormEvent, useCallback, useEffect, useRef } from "react";
-import { ArrowRight, Globe, Instagram, Twitter } from "lucide-react";
+import { useRef } from "react";
+import {
+  motion,
+  MotionValue,
+  useInView,
+  useScroll,
+  useTransform,
+} from "framer-motion";
+import { ArrowRight, Check } from "lucide-react";
 
-const VIDEO_URL =
-  "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260328_115001_bcdaa3b4-03de-47e7-ad63-ae3e392c32d4.mp4";
+const HERO_VIDEO =
+  "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260405_170732_8a9ccda6-5cff-4628-b164-059c500a2b41.mp4";
 
-export default function App() {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const animationFrameRef = useRef<number | null>(null);
-  const loopTimeoutRef = useRef<number | null>(null);
-  const fadingOutRef = useRef(false);
+const WORK_VIDEO =
+  "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260406_133058_0504132a-0cf3-4450-a370-8ea3b05c95d4.mp4";
 
-  const fadeVideoTo = useCallback((targetOpacity: number, duration = 500) => {
-    const video = videoRef.current;
-    if (!video) return;
+const WORK_ICONS = [
+  "https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260405_171918_4a5edc79-d78f-4637-ac8b-53c43c220606.png&w=1280&q=85",
+  "https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260405_171741_ed9845ab-f5b2-4018-8ce7-07cc01823522.png&w=1280&q=85",
+  "https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260405_171809_f56666dc-c099-4778-ad82-9ad4f209567b.png&w=1280&q=85",
+];
 
-    if (animationFrameRef.current !== null) {
-      cancelAnimationFrame(animationFrameRef.current);
-    }
+const easeOut = [0.16, 1, 0.3, 1] as const;
+const cardEase = [0.22, 1, 0.36, 1] as const;
 
-    const startOpacity = Number.parseFloat(video.style.opacity || "0");
-    const startTime = performance.now();
+type WordsPullUpProps = {
+  text: string;
+  className?: string;
+  showAsterisk?: boolean;
+};
 
-    const animate = (now: number) => {
-      const progress = Math.min((now - startTime) / duration, 1);
-      video.style.opacity = String(
-        startOpacity + (targetOpacity - startOpacity) * progress,
-      );
-
-      if (progress < 1) {
-        animationFrameRef.current = requestAnimationFrame(animate);
-      } else {
-        animationFrameRef.current = null;
-      }
-    };
-
-    animationFrameRef.current = requestAnimationFrame(animate);
-  }, []);
-
-  const handleVideoReady = useCallback(() => {
-    fadingOutRef.current = false;
-    fadeVideoTo(1, 500);
-  }, [fadeVideoTo]);
-
-  const handleTimeUpdate = useCallback(() => {
-    const video = videoRef.current;
-    if (!video || !Number.isFinite(video.duration)) return;
-
-    const timeRemaining = video.duration - video.currentTime;
-    if (timeRemaining <= 0.55 && !fadingOutRef.current) {
-      fadingOutRef.current = true;
-      fadeVideoTo(0, 500);
-    }
-  }, [fadeVideoTo]);
-
-  const handleEnded = useCallback(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    if (animationFrameRef.current !== null) {
-      cancelAnimationFrame(animationFrameRef.current);
-      animationFrameRef.current = null;
-    }
-
-    video.style.opacity = "0";
-
-    if (loopTimeoutRef.current !== null) {
-      window.clearTimeout(loopTimeoutRef.current);
-    }
-
-    loopTimeoutRef.current = window.setTimeout(() => {
-      const currentVideo = videoRef.current;
-      if (!currentVideo) return;
-
-      currentVideo.currentTime = 0;
-      fadingOutRef.current = false;
-      void currentVideo.play();
-      fadeVideoTo(1, 500);
-    }, 100);
-  }, [fadeVideoTo]);
-
-  useEffect(() => {
-    return () => {
-      if (animationFrameRef.current !== null) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
-      if (loopTimeoutRef.current !== null) {
-        window.clearTimeout(loopTimeoutRef.current);
-      }
-    };
-  }, []);
-
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-  };
+function WordsPullUp({ text, className = "", showAsterisk = false }: WordsPullUpProps) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const isInView = useInView(ref, { once: true });
+  const words = text.split(" ");
 
   return (
-    <div className="relative flex min-h-screen flex-col overflow-hidden bg-black">
-      <video
-        ref={videoRef}
-        className="absolute inset-0 h-full w-full translate-y-[17%] object-cover"
-        src={VIDEO_URL}
-        muted
-        autoPlay
-        playsInline
-        preload="auto"
-        style={{ opacity: 0 }}
-        onLoadedData={handleVideoReady}
-        onTimeUpdate={handleTimeUpdate}
-        onEnded={handleEnded}
-        aria-hidden="true"
-      />
-
-      <nav className="relative z-20 px-6 py-6" aria-label="Main navigation">
-        <div className="liquid-glass mx-auto flex max-w-5xl items-center justify-between rounded-full px-6 py-3">
-          <div className="flex items-center gap-8">
-            <a href="#" className="flex items-center gap-2 text-lg font-semibold text-white">
-              <Globe size={24} aria-hidden="true" />
-              <span>Asme</span>
-            </a>
-
-            <div className="hidden items-center gap-8 md:flex">
-              <a
-                href="#features"
-                className="text-sm font-medium text-white/80 transition-colors hover:text-white"
-              >
-                Features
-              </a>
-              <a
-                href="#pricing"
-                className="text-sm font-medium text-white/80 transition-colors hover:text-white"
-              >
-                Pricing
-              </a>
-              <a
-                href="#about"
-                className="text-sm font-medium text-white/80 transition-colors hover:text-white"
-              >
-                About
-              </a>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <button type="button" className="text-sm font-medium text-white">
-              Sign Up
-            </button>
-            <button
-              type="button"
-              className="liquid-glass rounded-full px-6 py-2 text-sm font-medium text-white"
-            >
-              Login
-            </button>
-          </div>
-        </div>
-      </nav>
-
-      <main className="relative z-10 flex flex-1 -translate-y-[20%] flex-col items-center justify-center px-6 py-12 text-center">
-        <h1
-          className="mb-8 whitespace-nowrap text-5xl tracking-tight text-white md:text-6xl lg:text-7xl"
-          style={{ fontFamily: "'Instrument Serif', serif" }}
-        >
-          Built for the curious
-        </h1>
-
-        <div className="w-full max-w-xl space-y-4">
-          <form
-            className="liquid-glass flex items-center gap-3 rounded-full py-2 pl-6 pr-2"
-            onSubmit={handleSubmit}
+    <span ref={ref} className={`inline-flex flex-wrap justify-center ${className}`}>
+      {words.map((word, index) => (
+        <span key={`${word}-${index}`} className="inline-block overflow-visible">
+          <motion.span
+            className="relative inline-block"
+            initial={{ y: 20, opacity: 0 }}
+            animate={isInView ? { y: 0, opacity: 1 } : { y: 20, opacity: 0 }}
+            transition={{ duration: 0.8, delay: index * 0.08, ease: easeOut }}
           >
-            <input
-              type="email"
-              placeholder="Enter your email"
-              aria-label="Email address"
-              className="min-w-0 flex-1 bg-transparent text-base text-white outline-none placeholder:text-white/40"
-            />
-            <button
-              type="submit"
-              className="rounded-full bg-white p-3 text-black"
-              aria-label="Submit email"
-            >
-              <ArrowRight size={20} aria-hidden="true" />
-            </button>
-          </form>
+            {word}
+            {showAsterisk && index === words.length - 1 && (
+              <span className="absolute -right-[0.3em] top-[0.65em] text-[0.31em]">*</span>
+            )}
+          </motion.span>
+          {index < words.length - 1 && <span>&nbsp;</span>}
+        </span>
+      ))}
+    </span>
+  );
+}
 
-          <p className="px-4 text-sm leading-relaxed text-white">
-            Stay updated with the latest news and insights. Subscribe to our
-            newsletter today and never miss out on exciting updates.
-          </p>
+type StyledSegment = {
+  text: string;
+  className: string;
+};
 
-          <button
-            type="button"
-            className="liquid-glass rounded-full px-8 py-3 text-sm font-medium text-white transition-colors hover:bg-white/5"
+function WordsPullUpMultiStyle({ segments }: { segments: StyledSegment[] }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true });
+  const words = segments.flatMap((segment) =>
+    segment.text.split(" ").map((word) => ({ word, className: segment.className })),
+  );
+
+  return (
+    <div ref={ref} className="inline-flex flex-wrap justify-center">
+      {words.map(({ word, className }, index) => (
+        <span key={`${word}-${index}`} className="inline-block overflow-hidden pb-[0.08em]">
+          <motion.span
+            className={`inline-block ${className}`}
+            initial={{ y: 20, opacity: 0 }}
+            animate={isInView ? { y: 0, opacity: 1 } : { y: 20, opacity: 0 }}
+            transition={{ duration: 0.8, delay: index * 0.08, ease: easeOut }}
           >
-            Manifesto
-          </button>
-        </div>
-      </main>
-
-      <footer className="relative z-10 flex justify-center gap-4 pb-12">
-        <button
-          type="button"
-          className="liquid-glass rounded-full p-4 text-white/80 transition-all hover:bg-white/5 hover:text-white"
-          aria-label="Instagram"
-        >
-          <Instagram size={20} aria-hidden="true" />
-        </button>
-        <button
-          type="button"
-          className="liquid-glass rounded-full p-4 text-white/80 transition-all hover:bg-white/5 hover:text-white"
-          aria-label="Twitter"
-        >
-          <Twitter size={20} aria-hidden="true" />
-        </button>
-        <button
-          type="button"
-          className="liquid-glass rounded-full p-4 text-white/80 transition-all hover:bg-white/5 hover:text-white"
-          aria-label="Website"
-        >
-          <Globe size={20} aria-hidden="true" />
-        </button>
-      </footer>
+            {word}
+          </motion.span>
+          {index < words.length - 1 && <span>&nbsp;</span>}
+        </span>
+      ))}
     </div>
+  );
+}
+
+function AnimatedLetter({
+  character,
+  progress,
+  range,
+}: {
+  character: string;
+  progress: MotionValue<number>;
+  range: [number, number];
+}) {
+  const opacity = useTransform(progress, range, [0.2, 1]);
+
+  return (
+    <motion.span style={{ opacity, whiteSpace: "pre" }}>
+      {character}
+    </motion.span>
+  );
+}
+
+function ScrollRevealParagraph({ text }: { text: string }) {
+  const ref = useRef<HTMLParagraphElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start 0.8", "end 0.2"],
+  });
+  const characters = Array.from(text);
+
+  return (
+    <p ref={ref} className="mx-auto mt-12 max-w-2xl text-xs leading-relaxed text-primary sm:text-sm md:text-base">
+      {characters.map((character, index) => {
+        const characterProgress = index / characters.length;
+        return (
+          <AnimatedLetter
+            key={`${character}-${index}`}
+            character={character}
+            progress={scrollYProgress}
+            range={[
+              Math.max(0, characterProgress - 0.1),
+              Math.min(1, characterProgress + 0.05),
+            ]}
+          />
+        );
+      })}
+    </p>
+  );
+}
+
+const projectCards = [
+  {
+    number: "01",
+    icon: WORK_ICONS[0],
+    items: ["项目背景待补充", "我的职责待补充", "产品过程待补充", "结果复盘待补充"],
+  },
+  {
+    number: "02",
+    icon: WORK_ICONS[1],
+    items: ["问题定义待补充", "方案设计待补充", "验证结论待补充"],
+  },
+  {
+    number: "03",
+    icon: WORK_ICONS[2],
+    items: ["用户场景待补充", "迭代过程待补充", "项目结果待补充"],
+  },
+];
+
+function ProjectCard({
+  card,
+  index,
+  isInView,
+}: {
+  card: (typeof projectCards)[number];
+  index: number;
+  isInView: boolean;
+}) {
+  return (
+    <motion.article
+      className="flex min-h-[360px] flex-col justify-between rounded-2xl bg-[#212121] p-5 sm:min-h-[400px] lg:min-h-0"
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }}
+      transition={{ duration: 0.75, delay: index * 0.15, ease: cardEase }}
+    >
+      <div>
+        <img
+          src={card.icon}
+          alt=""
+          className="h-10 w-10 rounded-lg object-cover sm:h-12 sm:w-12"
+        />
+
+        <div className="mt-8 flex items-baseline justify-between gap-4">
+          <h3 className="text-lg font-normal text-[#E1E0CC]">项目待补充。</h3>
+          <span className="text-xs text-gray-500">({card.number})</span>
+        </div>
+
+        <ul className="mt-6 space-y-3">
+          {card.items.map((item) => (
+            <li key={item} className="flex items-start gap-2 text-xs leading-relaxed text-gray-400">
+              <Check size={14} className="mt-0.5 shrink-0 text-primary" aria-hidden="true" />
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <span className="mt-8 inline-flex items-center gap-2 text-xs text-primary/70" aria-disabled="true">
+        内容整理中
+        <ArrowRight size={14} className="-rotate-45" aria-hidden="true" />
+      </span>
+    </motion.article>
+  );
+}
+
+function Hero() {
+  const navItems = [
+    ["我的故事", "#about"],
+    ["产品方法", "#about"],
+    ["个人作品", "#works"],
+    ["文章记录", "#works"],
+    ["合作联系", "#contact"],
+  ];
+
+  return (
+    <section id="home" className="h-screen bg-black p-4 md:p-6">
+      <div className="relative h-full overflow-hidden rounded-2xl md:rounded-[2rem]">
+        <video
+          className="absolute inset-0 h-full w-full object-cover"
+          src={HERO_VIDEO}
+          autoPlay
+          loop
+          muted
+          playsInline
+          aria-hidden="true"
+        />
+        <div className="noise-overlay pointer-events-none absolute inset-0 opacity-[0.7] mix-blend-overlay" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/60" />
+
+        <nav className="absolute left-1/2 top-0 z-20 -translate-x-1/2" aria-label="主导航">
+          <div className="flex items-center gap-3 whitespace-nowrap rounded-b-2xl bg-black px-4 py-2 sm:gap-6 md:gap-12 md:rounded-b-3xl md:px-8 lg:gap-14">
+            {navItems.map(([label, href]) => (
+              <a
+                key={label}
+                href={href}
+                className="text-[10px] transition-colors sm:text-xs md:text-sm"
+                style={{ color: "rgba(225, 224, 204, 0.8)" }}
+                onMouseEnter={(event) => {
+                  event.currentTarget.style.color = "#E1E0CC";
+                }}
+                onMouseLeave={(event) => {
+                  event.currentTarget.style.color = "rgba(225, 224, 204, 0.8)";
+                }}
+              >
+                {label}
+              </a>
+            ))}
+          </div>
+        </nav>
+
+        <div className="absolute bottom-0 left-0 right-0 z-10 grid grid-cols-12 items-end gap-y-5 px-3 pb-4 sm:px-5 sm:pb-5 md:px-8 md:pb-7">
+          <div className="col-span-12 lg:col-span-8">
+            <h1
+              className="text-[26vw] font-medium leading-[0.85] tracking-[-0.07em] text-[#E1E0CC] sm:text-[24vw] md:text-[22vw] lg:text-[20vw] xl:text-[19vw] 2xl:text-[20vw]"
+              aria-label="耿乐"
+            >
+              <WordsPullUp text="耿乐" showAsterisk />
+            </h1>
+          </div>
+
+          <div className="col-span-12 flex flex-col items-start gap-4 pb-1 lg:col-span-4 lg:pl-4">
+            <motion.p
+              className="max-w-md text-left text-xs leading-[1.2] text-primary/70 sm:text-sm md:text-base"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.5, ease: easeOut }}
+            >
+              我是一名AI产品经理，关注需求识别、产品设计与价值验证，希望把复杂的AI能力转化为清楚、可用的产品体验。
+            </motion.p>
+
+            <motion.a
+              href="#works"
+              className="group inline-flex items-center gap-2 rounded-full bg-primary py-1.5 pl-5 pr-1.5 text-sm font-medium text-black transition-all hover:gap-3 sm:text-base"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.7, ease: easeOut }}
+            >
+              查看作品
+              <span className="grid h-9 w-9 place-items-center rounded-full bg-black text-primary transition-transform group-hover:scale-110 sm:h-10 sm:w-10">
+                <ArrowRight size={18} aria-hidden="true" />
+              </span>
+            </motion.a>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function About() {
+  const paragraph =
+    "我相信，AI产品的价值不在于展示技术，而在于解决真实问题。我会从用户需求出发，在模型能力、业务目标与产品体验之间寻找平衡，并通过原型和反馈持续验证判断。";
+
+  return (
+    <section id="about" className="bg-black px-4 py-20 sm:px-6 sm:py-28">
+      <div className="mx-auto max-w-6xl rounded-[2rem] bg-[#101010] px-6 py-20 text-center sm:px-10 sm:py-28 md:px-16">
+        <p className="text-[10px] text-primary sm:text-xs">AI产品 · 产品实践</p>
+
+        <div className="mx-auto mt-8 max-w-3xl text-3xl leading-[0.95] text-[#E1E0CC] sm:text-4xl sm:leading-[0.9] md:text-5xl lg:text-6xl xl:text-7xl">
+          <WordsPullUpMultiStyle
+            segments={[
+              { text: "我是耿乐，", className: "font-normal" },
+              { text: "一名AI产品经理。", className: "font-serif italic" },
+              {
+                text: "我专注于需求识别、产品设计与价值验证。",
+                className: "font-normal",
+              },
+            ]}
+          />
+        </div>
+
+        <ScrollRevealParagraph text={paragraph} />
+      </div>
+    </section>
+  );
+}
+
+function Works() {
+  const cardsRef = useRef<HTMLDivElement>(null);
+  const cardsInView = useInView(cardsRef, { once: true, margin: "-100px" });
+
+  return (
+    <section id="works" className="relative min-h-screen overflow-hidden bg-black px-4 py-20 sm:px-6 sm:py-28">
+      <div className="bg-noise pointer-events-none absolute inset-0 opacity-[0.15]" />
+
+      <div className="relative mx-auto max-w-7xl">
+        <header className="mb-12 max-w-4xl text-xl font-normal sm:mb-16 sm:text-2xl md:text-3xl lg:text-4xl">
+          <div className="text-[#E1E0CC]">
+            <WordsPullUpMultiStyle
+              segments={[{ text: "用作品呈现判断、过程与结果。", className: "font-normal" }]}
+            />
+          </div>
+          <div className="mt-1 text-gray-500">
+            <WordsPullUpMultiStyle
+              segments={[{ text: "内容正在整理，保持真实，稍后见。", className: "font-normal" }]}
+            />
+          </div>
+        </header>
+
+        <div ref={cardsRef} className="grid grid-cols-1 gap-3 sm:gap-2 md:grid-cols-2 md:gap-1 lg:h-[480px] lg:grid-cols-4">
+          <motion.article
+            className="relative min-h-[420px] overflow-hidden rounded-2xl md:min-h-[440px] lg:min-h-0"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={cardsInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.75, ease: cardEase }}
+          >
+            <video
+              className="absolute inset-0 h-full w-full object-cover"
+              src={WORK_VIDEO}
+              autoPlay
+              loop
+              muted
+              playsInline
+              aria-hidden="true"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/10" />
+            <div className="absolute inset-x-0 bottom-0 p-5">
+              <p className="text-base text-[#E1E0CC]">这里放个人作品影像。</p>
+              <p className="mt-1 text-[10px] text-primary/60">当前视频仅作为视觉占位，后续替换</p>
+            </div>
+          </motion.article>
+
+          {projectCards.map((card, index) => (
+            <ProjectCard
+              key={card.number}
+              card={card}
+              index={index + 1}
+              isInView={cardsInView}
+            />
+          ))}
+        </div>
+
+        <div id="contact" className="mt-20 flex flex-col gap-4 border-t border-white/10 pt-8 text-primary sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-[10px] uppercase tracking-[0.2em] text-primary/50">Contact</p>
+            <p className="mt-3 max-w-xl text-lg sm:text-xl">如果你也在推动AI产品落地，欢迎和我交流。</p>
+          </div>
+          <p className="text-xs text-gray-500">微信与邮箱待补充</p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export default function App() {
+  return (
+    <main className="bg-black">
+      <Hero />
+      <About />
+      <Works />
+    </main>
   );
 }
