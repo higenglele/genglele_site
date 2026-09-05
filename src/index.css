@@ -48,3 +48,75 @@ a {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* About: editorial profile and chronological experience list. */
+.about-section {
+  background: #000;
+  color: #e1e0cc;
+  padding: clamp(5rem, 8vw, 9rem) clamp(1.5rem, 4vw, 5rem);
+  scroll-margin-top: 2rem;
+}
+.about-layout {
+  max-width: 1440px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 2fr);
+  gap: clamp(3rem, 6vw, 7rem);
+}
+.about-eyebrow { margin: 0 0 1.5rem; color: #e89a62; font-size: .875rem; letter-spacing: .08em; line-height: 1.6; }
+.about-profile h2 { margin: 0; font-size: clamp(3.5rem, 5.8vw, 5.8rem); font-weight: 400; line-height: 1.08; letter-spacing: -.055em; }
+.about-identity { margin-top: clamp(3rem, 6vw, 6rem); padding-top: 1.75rem; border-top: 1px solid #33332e; }
+.about-caption { color: #aaa99e; font-size: .875rem; letter-spacing: .12em; }
+.about-name { margin: 1.5rem 0; font-size: 3.25rem; line-height: 1.25; letter-spacing: -.03em; }
+.about-name span { display: block; margin-top: .75rem; font-size: 1rem; letter-spacing: .06em; }
+.about-intro, .about-philosophy { max-width: 23rem; font-size: 1rem; line-height: 1.9; }
+.about-intro { color: #c7c6b9; margin: 1.75rem 0 1rem; }
+.about-philosophy { color: #aaa99e; margin: 0; }
+.about-experiences { list-style: none; padding: 0; margin: 0; }
+.about-experience { display: grid; grid-template-columns: 2rem minmax(0, 1fr); gap: 1.75rem; padding: 2rem 0 2.75rem; border-bottom: 1px solid #2b2b27; }
+.about-experience:first-child { padding-top: .25rem; }
+.about-experience + .about-experience { padding-top: 2.75rem; }
+.experience-number { font-size: 1.25rem; font-variant-numeric: tabular-nums; color: #aaa99e; line-height: 1.6; }
+.experience-header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: .75rem 1.5rem; }
+.experience-header h3 { margin: 0; font-size: clamp(1.25rem, 1.55vw, 1.6rem); line-height: 1.55; font-weight: 600; }
+.experience-header h3 span { display: block; font-weight: 400; font-size: 1rem; color: #b4b3a6; margin-top: .4rem; }
+.experience-date { margin: 0; color: #b4b3a6; font-size: .875rem; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.experience-focus { margin: 1.75rem 0 .75rem; color: #ceccba; font-size: .875rem; line-height: 1.6; }
+.experience-description { margin: 0; color: #aaa99e; font-size: 1rem; line-height: 1.95; }
+.experience-results { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; margin-top: 1.75rem; }
+.experience-results p { margin: 0; }
+.experience-results strong { display: block; font-size: clamp(1.5rem, 2vw, 2rem); font-weight: 500; letter-spacing: -.03em; line-height: 1.3; }
+.experience-results span { display: block; margin-top: .5rem; color: #aaa99e; font-size: .875rem; line-height: 1.7; }
+@media (max-width: 900px) {
+  .about-layout { grid-template-columns: 1fr; gap: 3rem; }
+  .about-identity { margin-top: 2rem; }
+  .about-intro, .about-philosophy { max-width: 36rem; }
+  .about-name { font-size: 2.75rem; }
+}
+@media (max-width: 480px) {
+  .about-experience { grid-template-columns: 1.5rem minmax(0, 1fr); gap: .75rem; }
+  .experience-results { grid-template-columns: 1fr; gap: 1.25rem; }
+  .about-eyebrow { letter-spacing: .035em; }
+}
+
+.contact-section { width: 100%; max-width: 860px; margin: 3rem auto 0; padding: 2rem 2.5rem; border: 1px solid #33332e; border-radius: 1.75rem; background: #111; display: grid; grid-template-columns: minmax(0, 1fr) 200px; align-items: center; gap: 2rem; color: #e1e0cc; scroll-margin-top: 2rem; }
+.contact-details { min-width: 0; }
+.contact-eyebrow { margin: 0 0 .5rem; color: #e89a62; font-size: .875rem; letter-spacing: .1em; }
+.contact-details h2 { margin: 0; max-width: 38rem; font-size: 1.75rem; font-weight: 400; line-height: 1.5; }
+.contact-intro { margin: .5rem 0 1.25rem; color: #aaa99e; font-size: 1rem; line-height: 1.8; }
+.contact-list { margin: 0; display: grid; gap: .375rem; font-size: 1rem; }
+.contact-list > div { display: flex; align-items: baseline; gap: 1.75rem; }
+.contact-list dt { color: #aaa99e; flex-shrink: 0; }
+.contact-list dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.contact-list a { display: inline-block; padding: .5rem 0; text-underline-offset: .3em; }
+.contact-list a:hover { text-decoration: underline; }
+.contact-section a:focus-visible { outline: 2px solid #e89a62; outline-offset: 5px; border-radius: 3px; }
+.contact-wechat { margin: 0; width: 200px; }
+.contact-wechat a { display: block; border-radius: 12px; overflow: hidden; }
+.contact-wechat img { display: block; width: 100%; height: auto; }
+.contact-wechat figcaption { margin-top: .625rem; text-align: center; font-size: 1rem; }
+.contact-wechat figcaption span { display: block; color: #aaa99e; font-size: .875rem; margin-top: .4rem; }
+@media (max-width: 640px) {
+  .contact-section { grid-template-columns: minmax(0, 1fr); padding: 1.5rem; gap: 1.5rem; border-radius: 1.25rem; }
+  .contact-wechat { width: min(220px, 100%); justify-self: center; }
+}

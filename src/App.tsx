@@ -1,10 +1,7 @@
 import { useRef } from "react";
 import {
   motion,
-  MotionValue,
   useInView,
-  useScroll,
-  useTransform,
 } from "framer-motion";
 import { ArrowRight, Check } from "lucide-react";
 
@@ -83,52 +80,6 @@ function WordsPullUpMultiStyle({ segments }: { segments: StyledSegment[] }) {
   );
 }
 
-function AnimatedLetter({
-  character,
-  progress,
-  range,
-}: {
-  character: string;
-  progress: MotionValue<number>;
-  range: [number, number];
-}) {
-  const opacity = useTransform(progress, range, [0.2, 1]);
-
-  return (
-    <motion.span style={{ opacity, whiteSpace: "pre" }}>
-      {character}
-    </motion.span>
-  );
-}
-
-function ScrollRevealParagraph({ text }: { text: string }) {
-  const ref = useRef<HTMLParagraphElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start 0.8", "end 0.2"],
-  });
-  const characters = Array.from(text);
-
-  return (
-    <p ref={ref} className="mx-auto mt-12 max-w-2xl text-xs leading-relaxed text-primary sm:text-sm md:text-base">
-      {characters.map((character, index) => {
-        const characterProgress = index / characters.length;
-        return (
-          <AnimatedLetter
-            key={`${character}-${index}`}
-            character={character}
-            progress={scrollYProgress}
-            range={[
-              Math.max(0, characterProgress - 0.1),
-              Math.min(1, characterProgress + 0.05),
-            ]}
-          />
-        );
-      })}
-    </p>
-  );
-}
-
 const projectCards = [
   {
     number: "01",
@@ -196,7 +147,7 @@ function ProjectCard({
 function Hero() {
   const navItems = [
     ["我的故事", "#about"],
-    ["产品方法", "#about"],
+    ["工作经历", "#about"],
     ["个人作品", "#works"],
     ["文章记录", "#works"],
     ["合作联系", "#contact"],
@@ -278,28 +229,52 @@ function Hero() {
 }
 
 function About() {
-  const paragraph =
-    "我相信，AI产品的价值不在于展示技术，而在于解决真实问题。我会从用户需求出发，在模型能力、业务目标与产品体验之间寻找平衡，并通过原型和反馈持续验证判断。";
-
   return (
-    <section id="about" className="bg-black px-4 py-20 sm:px-6 sm:py-28">
-      <div className="mx-auto max-w-6xl rounded-[2rem] bg-[#101010] px-6 py-20 text-center sm:px-10 sm:py-28 md:px-16">
-        <p className="text-[10px] text-primary sm:text-xs">AI产品 · 产品实践</p>
+    <section id="about" className="about-section" aria-labelledby="about-title">
+      <div className="about-layout">
+        <header className="about-profile">
+          <p className="about-eyebrow">GENG LE · AI PRODUCT MANAGER</p>
+          <h2 id="about-title">About Me</h2>
+          <div className="about-identity">
+            <span className="about-caption">关于我</span>
+            <p className="about-name">耿乐<span>AI 产品经理</span></p>
+            <p className="about-intro">3 年 AI 产品经验，专注 Agent、智能工作流与数据质量。</p>
+            <p className="about-philosophy">从真实业务问题出发，通过原型验证与效果评测，将 AI 能力转化为可用的产品。</p>
+          </div>
+        </header>
 
-        <div className="mx-auto mt-8 max-w-3xl text-3xl leading-[0.95] text-[#E1E0CC] sm:text-4xl sm:leading-[0.9] md:text-5xl lg:text-6xl xl:text-7xl">
-          <WordsPullUpMultiStyle
-            segments={[
-              { text: "我是耿乐，", className: "font-normal" },
-              { text: "一名AI产品经理。", className: "font-serif italic" },
-              {
-                text: "我专注于需求识别、产品设计与价值验证。",
-                className: "font-normal",
-              },
-            ]}
-          />
-        </div>
-
-        <ScrollRevealParagraph text={paragraph} />
+        <ol className="about-experiences" aria-label="工作经历">
+          <li className="about-experience">
+            <span className="experience-number" aria-hidden="true">01</span>
+            <article>
+              <header className="experience-header">
+                <h3>腾讯云雀信息技术有限公司<span>AI 产品经理</span></h3>
+                <p className="experience-date"><time dateTime="2025-07">2025.07</time> — <time dateTime="2026-07">2026.07</time></p>
+              </header>
+              <p className="experience-focus">智能标注平台 · 数据质量</p>
+              <p className="experience-description">负责智能标注平台的功能开发与优化，通过用户调研和小样本实验，推动 AI 预标注、人工校验与自动质量评估落地，提升大规模数据生产的效率与质量。</p>
+              <div className="experience-results">
+                <p><strong>约 8 倍</strong><span>同批数据下，标注效率较纯人工提升</span></p>
+                <p><strong>60% → 95%</strong><span>质量评估覆盖率</span></p>
+              </div>
+            </article>
+          </li>
+          <li className="about-experience">
+            <span className="experience-number" aria-hidden="true">02</span>
+            <article>
+              <header className="experience-header">
+                <h3>湖北升思科技股份有限公司<span>AI 产品经理</span></h3>
+                <p className="experience-date"><time dateTime="2023-07">2023.07</time> — <time dateTime="2025-07">2025.07</time></p>
+              </header>
+              <p className="experience-focus">新人孵化平台 · AI 选题策划 Agent</p>
+              <p className="experience-description">围绕新媒体运营的培训与策划瓶颈，负责新人账号孵化陪跑管理平台和 AI 选题策划 Agent。通过能力画像、知识库检索与选题工作流，将运营经验沉淀为可复用的产品能力，并持续通过 A/B 对比验证效果。</p>
+              <div className="experience-results">
+                <p><strong>缩短约 50%</strong><span>新人独立上岗周期</span></p>
+                <p><strong>提升约 3 倍</strong><span>Agent 辅助选题下，人均可支撑账号数</span></p>
+              </div>
+            </article>
+          </li>
+        </ol>
       </div>
     </section>
   );
@@ -360,13 +335,24 @@ function Works() {
           ))}
         </div>
 
-        <div id="contact" className="mt-20 flex flex-col gap-4 border-t border-white/10 pt-8 text-primary sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="text-[10px] uppercase tracking-[0.2em] text-primary/50">Contact</p>
-            <p className="mt-3 max-w-xl text-lg sm:text-xl">如果你也在推动AI产品落地，欢迎和我交流。</p>
+        <section id="contact" className="contact-section" aria-labelledby="contact-title">
+          <div className="contact-details">
+            <p className="contact-eyebrow">CONTACT · 合作联系</p>
+            <h2 id="contact-title">合作联系</h2>
+            <p className="contact-intro">如果你也在推动 AI 产品落地，欢迎和我交流。</p>
+            <dl className="contact-list">
+              <div><dt>姓名</dt><dd>耿乐</dd></div>
+              <div><dt>电话</dt><dd><a href="tel:19503429328">195 0342 9328</a></dd></div>
+              <div><dt>邮箱</dt><dd><a href="mailto:hi@genglele.com">hi@genglele.com</a></dd></div>
+            </dl>
           </div>
-          <p className="text-xs text-gray-500">微信与邮箱待补充</p>
-        </div>
+          <figure className="contact-wechat">
+            <a href="/wechat-qr.jpg" target="_blank" rel="noopener noreferrer" aria-label="打开耿乐的微信二维码原图（新窗口）">
+              <img src="/wechat-qr.jpg" alt="耿乐的微信二维码，扫码添加好友" width="888" height="1131" loading="lazy" />
+            </a>
+            <figcaption>微信联系<span>扫码添加好友 · 点击查看原图</span></figcaption>
+          </figure>
+        </section>
       </div>
     </section>
   );
