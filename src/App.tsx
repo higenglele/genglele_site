@@ -81,7 +81,20 @@ function WordsPullUpMultiStyle({ segments }: { segments: StyledSegment[] }) {
   );
 }
 
-const projectCards = [
+const OMII_COVER = "/omii-cover.png";
+
+type ProjectCardData = {
+  number: string;
+  icon?: string;
+  title?: string;
+  subtitle?: string;
+  cover?: string;
+  href?: string;
+  linkLabel?: string;
+  items: string[];
+};
+
+const projectCards: ProjectCardData[] = [
   {
     number: "01",
     icon: WORK_ICONS[0],
@@ -94,8 +107,16 @@ const projectCards = [
   },
   {
     number: "03",
-    icon: WORK_ICONS[2],
-    items: ["用户场景待补充", "迭代过程待补充", "项目结果待补充"],
+    title: "智能插件",
+    subtitle: "AI 滑词工具 Omii",
+    cover: OMII_COVER,
+    href: "https://higenglele.github.io/omii/",
+    linkLabel: "查看项目",
+    items: [
+      "选中文字按 ⌘E，浮窗出现在光标旁",
+      "解释 · 总结 · 翻译 · 润色 · 续写",
+      "接任意 OpenAI 兼容接口，本地模型也行",
+    ],
   },
 ];
 
@@ -104,30 +125,57 @@ function ProjectCard({
   index,
   isInView,
 }: {
-  card: (typeof projectCards)[number];
+  card: ProjectCardData;
   index: number;
   isInView: boolean;
 }) {
+  const isPublished = Boolean(card.href);
+
   return (
     <motion.article
-      className="flex min-h-[360px] flex-col justify-between rounded-2xl bg-[#212121] p-5 sm:min-h-[400px] lg:min-h-0"
+      className="group flex min-h-[360px] flex-col justify-between rounded-2xl bg-[#212121] p-5 sm:min-h-[400px] lg:min-h-0"
       initial={{ opacity: 0, scale: 0.95 }}
       animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.75, delay: index * 0.15, ease: cardEase }}
     >
       <div>
-        <img
-          src={card.icon}
-          alt=""
-          className="h-10 w-10 rounded-lg object-cover sm:h-12 sm:w-12"
-        />
+        {isPublished ? (
+          <div className="flex items-start justify-between gap-4">
+            <h3 className="text-base leading-snug text-[#E1E0CC]">
+              {card.title}
+              <span className="block text-gray-400">{card.subtitle}</span>
+            </h3>
+            <span className="shrink-0 rounded-lg bg-primary/15 px-2.5 py-1 text-[11px] font-medium text-primary">
+              {card.number}
+            </span>
+          </div>
+        ) : (
+          <>
+            <img
+              src={card.icon}
+              alt=""
+              className="h-10 w-10 rounded-lg object-cover sm:h-12 sm:w-12"
+            />
 
-        <div className="mt-8 flex items-baseline justify-between gap-4">
-          <h3 className="text-lg font-normal text-[#E1E0CC]">项目待补充。</h3>
-          <span className="text-xs text-gray-500">({card.number})</span>
-        </div>
+            <div className="mt-8 flex items-baseline justify-between gap-4">
+              <h3 className="text-lg font-normal text-[#E1E0CC]">项目待补充。</h3>
+              <span className="text-xs text-gray-500">({card.number})</span>
+            </div>
+          </>
+        )}
 
-        <ul className="mt-6 space-y-3">
+        {card.cover ? (
+          <div className="mt-5 overflow-hidden rounded-xl border border-white/[0.07] bg-black">
+            <img
+              src={card.cover}
+              alt=""
+              loading="lazy"
+              className="aspect-[16/10] w-full object-cover object-top opacity-90 transition-opacity duration-500 group-hover:opacity-100"
+            />
+          </div>
+        ) : null}
+
+        <ul className={card.cover ? "mt-5 space-y-2.5" : "mt-6 space-y-3"}>
           {card.items.map((item) => (
             <li key={item} className="flex items-start gap-2 text-xs leading-relaxed text-gray-400">
               <Check size={14} className="mt-0.5 shrink-0 text-primary" aria-hidden="true" />
@@ -137,10 +185,22 @@ function ProjectCard({
         </ul>
       </div>
 
-      <span className="mt-8 inline-flex items-center gap-2 text-xs text-primary/70" aria-disabled="true">
-        内容整理中
-        <ArrowRight size={14} className="-rotate-45" aria-hidden="true" />
-      </span>
+      {isPublished ? (
+        <a
+          href={card.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-8 inline-flex items-center gap-2 text-xs text-primary transition-opacity hover:opacity-70"
+        >
+          {card.linkLabel ?? "查看项目"}
+          <ArrowRight size={14} className="-rotate-45" aria-hidden="true" />
+        </a>
+      ) : (
+        <span className="mt-8 inline-flex items-center gap-2 text-xs text-primary/70" aria-disabled="true">
+          内容整理中
+          <ArrowRight size={14} className="-rotate-45" aria-hidden="true" />
+        </span>
+      )}
     </motion.article>
   );
 }
@@ -298,7 +358,7 @@ function Works() {
           </div>
           <div className="mt-1 text-gray-500">
             <WordsPullUpMultiStyle
-              segments={[{ text: "内容正在整理，保持真实，稍后见。", className: "font-normal" }]}
+              segments={[{ text: "先放一个已经跑通的，其余陆续补上。", className: "font-normal" }]}
             />
           </div>
         </header>
