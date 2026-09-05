@@ -1,4 +1,5 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { NotesList, NoteDetail } from "./Notes";
 import {
   motion,
   useInView,
@@ -148,8 +149,8 @@ function Hero() {
   const navItems = [
     ["我的故事", "#about"],
     ["工作经历", "#about"],
-    ["个人作品", "#works"],
-    ["文章记录", "#works"],
+    ["个人项目", "#works"],
+    ["文章记录", "#notes"],
     ["合作联系", "#contact"],
   ];
 
@@ -216,7 +217,7 @@ function Hero() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.7, ease: easeOut }}
             >
-              查看作品
+              查看项目
               <span className="grid h-9 w-9 place-items-center rounded-full bg-black text-primary transition-transform group-hover:scale-110 sm:h-10 sm:w-10">
                 <ArrowRight size={18} aria-hidden="true" />
               </span>
@@ -335,6 +336,8 @@ function Works() {
           ))}
         </div>
 
+        <NotesList />
+
         <section id="contact" className="contact-section" aria-labelledby="contact-title">
           <div className="contact-details">
             <p className="contact-eyebrow">CONTACT · 合作联系</p>
@@ -359,6 +362,18 @@ function Works() {
 }
 
 export default function App() {
+  const [hash, setHash] = useState(window.location.hash);
+  useEffect(() => {
+    const update = () => setHash(window.location.hash);
+    window.addEventListener('hashchange', update);
+    return () => window.removeEventListener('hashchange', update);
+  }, []);
+  useEffect(() => {
+    if (!hash.startsWith('#notes/')) {
+      requestAnimationFrame(() => document.getElementById(hash.slice(1))?.scrollIntoView({ behavior: 'instant' }));
+    }
+  }, [hash]);
+  if (hash.startsWith('#notes/')) return <NoteDetail id={hash.slice(7)} />;
   return (
     <main className="bg-black">
       <Hero />
