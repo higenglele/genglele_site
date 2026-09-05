@@ -50,37 +50,6 @@ function WordsPullUp({ text, className = "" }: WordsPullUpProps) {
   );
 }
 
-type StyledSegment = {
-  text: string;
-  className: string;
-};
-
-function WordsPullUpMultiStyle({ segments }: { segments: StyledSegment[] }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true });
-  const words = segments.flatMap((segment) =>
-    segment.text.split(" ").map((word) => ({ word, className: segment.className })),
-  );
-
-  return (
-    <div ref={ref} className="inline-flex flex-wrap justify-center">
-      {words.map(({ word, className }, index) => (
-        <span key={`${word}-${index}`} className="inline-block overflow-hidden pb-[0.08em]">
-          <motion.span
-            className={`inline-block ${className}`}
-            initial={{ y: 20, opacity: 0 }}
-            animate={isInView ? { y: 0, opacity: 1 } : { y: 20, opacity: 0 }}
-            transition={{ duration: 0.8, delay: index * 0.08, ease: easeOut }}
-          >
-            {word}
-          </motion.span>
-          {index < words.length - 1 && <span>&nbsp;</span>}
-        </span>
-      ))}
-    </div>
-  );
-}
-
 const OMII_COVER = "/omii-cover.png";
 
 type ProjectCardData = {
@@ -350,17 +319,13 @@ function Works() {
       <div className="bg-noise pointer-events-none absolute inset-0 opacity-[0.15]" />
 
       <div className="relative mx-auto max-w-7xl">
-        <header className="mb-12 max-w-4xl text-xl font-normal sm:mb-16 sm:text-2xl md:text-3xl lg:text-4xl">
-          <div className="text-[#E1E0CC]">
-            <WordsPullUpMultiStyle
-              segments={[{ text: "用作品呈现判断、过程与结果。", className: "font-normal" }]}
-            />
-          </div>
-          <div className="mt-1 text-gray-500">
-            <WordsPullUpMultiStyle
-              segments={[{ text: "先放一个已经跑通的，其余陆续补上。", className: "font-normal" }]}
-            />
-          </div>
+        <header className="mb-10 text-left sm:mb-12">
+          <h2 className="text-3xl font-normal leading-tight tracking-tight text-[#E1E0CC] sm:text-4xl lg:text-5xl">
+            AI Native 产品探索
+          </h2>
+          <p className="mt-5 text-base leading-relaxed text-[#a3a3a3] sm:mt-6 sm:text-lg">
+            From AI Models to Intelligent Life: Transforming Foundation Models into Real-World AI Products
+          </p>
         </header>
 
         <div ref={cardsRef} className="grid grid-cols-1 gap-3 sm:gap-2 md:grid-cols-2 md:gap-1 lg:h-[480px] lg:grid-cols-4">
