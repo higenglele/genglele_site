@@ -381,8 +381,6 @@ function Works() {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/10" />
             <div className="absolute inset-x-0 bottom-0 p-5">
-              <p className="text-base text-[#E1E0CC]">这里放个人作品影像。</p>
-              <p className="mt-1 text-[10px] text-primary/60">当前视频仅作为视觉占位，后续替换</p>
             </div>
           </motion.article>
 
