@@ -78,7 +78,6 @@ a {
 .experience-number, .experience-header h3, .experience-header h3 span { transition: color 240ms ease; }
 .project-hover-grid, .about-experiences, .notes-list { isolation: isolate; }
 .project-hover-card, .about-experience, .notes-list > .note-row { position: relative; transition: filter 260ms ease, translate 300ms ease, scale 300ms ease, box-shadow 300ms ease, background-color 240ms ease; }
-.project-hover-card:focus-within { z-index: 2; box-shadow: 0 0 0 2px #e89a62; }
 @media (hover: hover) and (pointer: fine) {
   .about-experience:hover { background-color: rgba(232, 154, 98, .065); box-shadow: 12px 0 rgba(232, 154, 98, .065), -12px 0 rgba(232, 154, 98, .065); }
   .about-experience:hover .experience-number,

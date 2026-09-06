@@ -171,7 +171,7 @@ function ProjectCard({
       {isPublished ? (
         <a
           href={card.href}
-          target={card.href?.startsWith('#') ? undefined : '_blank'}
+          target="_blank"
           rel="noopener noreferrer"
           className="mt-8 inline-flex items-center gap-2 text-xs text-primary transition-opacity hover:opacity-70"
         >
