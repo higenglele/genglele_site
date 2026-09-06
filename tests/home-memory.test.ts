@@ -1,0 +1,15 @@
+import assert from 'node:assert/strict';
+import {DAY,recentMessages,savePreference} from '../src/home/memory';
+const now=DAY*3;
+const old=[{role:'user',content:'旧指令',at:now-DAY},{role:'assistant',content:null,tool_calls:[]},{role:'tool',content:'{}'}];
+const fresh=[{role:'user',content:'新指令',at:now-100},{role:'assistant',content:'新结果'}];
+assert.deepEqual(recentMessages([...old,...fresh],now),fresh,'24小时到期整轮删除，不留下孤立工具消息');
+assert.deepEqual(recentMessages([{role:'user',content:'没有时间'}],now),[]);
+assert.deepEqual(recentMessages(fresh,now+DAY),[],'新活动不延长旧轮次寿命');
+const saved=savePreference([],'睡觉时空调26度');
+assert.equal(saved.length,1);
+assert.equal(savePreference(saved,'睡觉时空调26度').length,1,'相同偏好不重复');
+const edited=savePreference(saved,'睡觉时空调25度',saved[0].id);
+assert.equal(edited.length,1);assert.equal(edited[0].text,'睡觉时空调25度');
+assert.throws(()=>savePreference(saved,'  '));
+console.log('通过：24小时边界、完整轮次清理、无时间记录丢弃、偏好新增去重与修改。');

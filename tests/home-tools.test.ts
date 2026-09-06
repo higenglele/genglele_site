@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+import {initialDevices} from '../src/home/state.ts';
+import {executeDeviceTool} from '../src/home/tools.ts';
+const set=executeDeviceTool(initialDevices,'set_device',{device_id:'bed-light',on:true,value:30});
+assert.equal(set.ok,true,'合法工具调用应成功');
+assert.equal(set.devices[1].on,true);
+assert.equal(set.devices[1].value,30);
+assert.equal(initialDevices[1].on,false);
+assert.equal(executeDeviceTool(initialDevices,'set_device',{device_id:'missing',on:true}).ok,false);
+assert.equal(executeDeviceTool(initialDevices,'set_device',{device_id:'ac',value:99}).ok,false,'越界不能静默执行');
+assert.equal(executeDeviceTool(initialDevices,'set_device',{device_id:'ac',online:true}).ok,false,'模型不能改写在线状态');
+assert.equal(executeDeviceTool(initialDevices.map(d=>({...d,online:false})),'set_device',{device_id:'ac',on:true}).ok,false);
+assert.equal(executeDeviceTool(initialDevices,'set_device',{device_id:'ac',on:'false'}).ok,false);
+assert.equal(executeDeviceTool(initialDevices,'set_device',{device_id:'vacuum',value:50}).ok,false);
+assert.equal(executeDeviceTool(initialDevices,'delete_device',{}).ok,false);
+assert.equal(executeDeviceTool(initialDevices,'list_devices',{}).changed,false);
+assert.equal(executeDeviceTool(initialDevices,'get_device',{device_id:'ac'}).ok,true);
+console.log('设备工具测试通过：参数、离线、未知设备、权限、读取与执行。');

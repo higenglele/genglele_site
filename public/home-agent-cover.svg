@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="600" viewBox="0 0 960 600">
+  <rect width="960" height="600" fill="#e9e5df"/>
+  <circle cx="788" cy="290" r="290" fill="#d5ded0"/>
+  <g font-family="system-ui, sans-serif" fill="#31463c">
+    <text x="54" y="82" font-size="19" letter-spacing="3">栖居 / HOME COMPANION</text>
+    <text x="54" y="215" font-size="52" font-weight="600">让家听懂</text>
+    <text x="54" y="284" font-size="52" font-weight="600">你的生活。</text>
+    <text x="56" y="345" font-size="20" fill="#677267">AI 家庭管家 · 产品探索</text>
+    <rect x="54" y="445" width="212" height="46" rx="23" fill="#31463c"/>
+    <text x="78" y="475" font-size="18" fill="#faf9f5">主动理解，确认后行动</text>
+    <rect x="573" y="47" width="306" height="512" rx="40" fill="#f6f4ef" stroke="#fff" stroke-width="4"/>
+    <text x="601" y="94" font-size="20" font-weight="600">栖居</text>
+    <circle cx="835" cy="87" r="5" fill="#66a58a"/>
+    <rect x="669" y="134" width="184" height="56" rx="23" fill="#31463c"/>
+    <text x="691" y="169" font-size="19" fill="#fff">我要准备睡觉了</text>
+    <rect x="595" y="211" width="248" height="91" rx="23" fill="#e6ecdf"/>
+    <text x="613" y="248" font-size="18">把灯光调柔和一些，</text>
+    <text x="613" y="275" font-size="18">等你确认后，为你安排。</text>
+    <rect x="595" y="319" width="258" height="151" rx="23" fill="#fff"/>
+    <text x="615" y="350" font-size="17" font-weight="600">睡眠计划 · 待确认</text>
+    <circle cx="620" cy="377" r="4" fill="#6089bb"/><text x="634" y="383" font-size="16">床头灯调至 15%</text>
+    <circle cx="620" cy="407" r="4" fill="#66a58a"/><text x="634" y="413" font-size="16">空调设为 26°C</text>
+    <circle cx="620" cy="437" r="4" fill="#c77570"/><text x="634" y="443" font-size="16">关闭卧室窗帘</text>
+    <text x="651" y="516" font-size="14" fill="#879084">模拟家庭 · 界面示意</text>
+  </g>
+</svg>

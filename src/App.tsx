@@ -1,3 +1,5 @@
+import { HomeApp } from "./home/HomeApp";
+import { ProductPage } from "./home/ProductPage";
 import { useEffect, useRef, useState } from "react";
 import { NotesList, NoteDetail } from "./Notes";
 import {
@@ -71,8 +73,12 @@ const projectCards: ProjectCardData[] = [
   },
   {
     number: "02",
-    icon: WORK_ICONS[1],
-    items: ["问题定义待补充", "方案设计待补充", "验证结论待补充"],
+    title: '栖居 · AI 家庭管家',
+    subtitle: '从自然语言到家庭场景协同',
+    cover: '/home-agent-cover.svg',
+    href: '#home-product',
+    linkLabel: '了解产品',
+    items: ['Agent 理解需求并提出设备计划', '确认后执行 · 明确偏好记忆', '手机 App 交互 Demo'],
   },
   {
     number: "03",
@@ -157,7 +163,7 @@ function ProjectCard({
       {isPublished ? (
         <a
           href={card.href}
-          target="_blank"
+          target={card.href?.startsWith('#') ? undefined : '_blank'}
           rel="noopener noreferrer"
           className="mt-8 inline-flex items-center gap-2 text-xs text-primary transition-opacity hover:opacity-70"
         >
@@ -396,6 +402,8 @@ export default function App() {
       requestAnimationFrame(() => document.getElementById(hash.slice(1))?.scrollIntoView({ behavior: 'instant' }));
     }
   }, [hash]);
+  if (hash === '#home-agent') return <HomeApp />;
+  if (hash === '#home-product') return <ProductPage />;
   if (hash.startsWith('#notes/')) return <NoteDetail id={hash.slice(7)} />;
   return (
     <main className="bg-black">

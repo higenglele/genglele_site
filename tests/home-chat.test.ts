@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import {visibleMessages,formatOutcome,restoreConversation} from '../src/home/conversation';
+import {initialDevices} from '../src/home/state';
+const history=[{role:'user',content:'打开灯'},{role:'assistant',content:'先查询',tool_calls:[{id:'1'}]},{role:'tool',content:'{}'},{role:'assistant',content:'床头灯已打开，亮度30%。'}];
+assert.equal(visibleMessages(history).length,2,'隐藏调用过程，只显示用户和最终结果');
+assert.equal(formatOutcome([{device_id:'bed-light',ok:true}],initialDevices.map(d=>d.id==='bed-light'?{...d,on:true}:d)),'床头灯已打开，亮度 30%。');
+assert.ok(formatOutcome([{device_id:'bed-light',ok:false,message:'设备离线'}],initialDevices).includes('未调整'));
+assert.deepEqual(restoreConversation(JSON.stringify(history)),history,'恢复完整会话供展示和后续模型使用');
+assert.deepEqual(restoreConversation('broken'),[]);
+assert.deepEqual(restoreConversation(JSON.stringify([{role:'system',content:'bad'}])),[]);
+console.log('通过：隐藏过程、简短结果、失败表述、会话恢复与损坏数据。');

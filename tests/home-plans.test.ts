@@ -1,0 +1,33 @@
+import assert from 'node:assert/strict';
+import {initialDevices} from '../src/home/state';
+import {createPlan,settlePlan} from '../src/home/plans';
+const args={title:'准备睡觉',reason:'减少灯光干扰',actions:[{device_id:'living-light',on:false},{device_id:'bed-light',on:true,value:20}]};
+const original=JSON.stringify(initialDevices);
+const plan=createPlan(initialDevices,args);
+assert.ok(plan,'必须生成可供确认的场景计划');
+assert.equal(JSON.stringify(initialDevices),original,'提案不得修改设备');
+assert.equal(plan.status,'pending');
+const cancelled=settlePlan(plan,initialDevices,false);
+assert.equal(cancelled.changed,false);
+assert.deepEqual(cancelled.devices,initialDevices);
+assert.equal(settlePlan(plan,initialDevices,true).changed,false,'取消后不得执行');
+const approved=createPlan(initialDevices,args);
+const result=settlePlan(approved,initialDevices,true);
+assert.equal(result.devices[0].on,false);
+assert.equal(result.devices[1].value,20);
+assert.equal(result.results.length,2);
+assert.equal(settlePlan(approved,result.devices,true).changed,false,'确认只能消费一次');
+const partial=createPlan(initialDevices,args);
+const offline=initialDevices.map(d=>d.id==='bed-light'?{...d,online:false}:d);
+const failed=settlePlan(partial,offline,true);
+assert.equal(failed.ok,false);
+assert.equal(failed.results[0].ok,true);
+assert.equal(failed.results[1].ok,false);
+assert.equal(failed.devices[1].on,false,'离线设备不修改');
+const stale=createPlan(initialDevices,args);
+const changed=initialDevices.map(d=>d.id==='living-light'?{...d,value:75}:d);
+assert.equal(settlePlan(stale,changed,true).changed,false,'手动更改后旧计划不得覆盖');
+for(const invalid of [ {...args,actions:[]},{...args,actions:[{device_id:'missing',on:true}]},{...args,actions:[{device_id:'ac',value:99}]},{...args,actions:[{device_id:'bed-light',online:true}]},{...args,actions:[args.actions[0],args.actions[0]]}]){
+ assert.throws(()=>createPlan(initialDevices,invalid),'无效计划必须拒绝');
+}
+console.log('通过：待确认不执行、取消、一次确认、多设备结果、离线失败、过期计划与参数校验。');

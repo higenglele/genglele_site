@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import { initialDevices, updateDevice, restoreDevices } from '../src/home/state.ts';
+const changed = updateDevice(initialDevices,'living-light',{value:30});
+assert.equal(changed[0].value,30,'亮度调整必须改变设备状态');
+assert.equal(initialDevices[0].value,60,'原始状态不得被修改');
+assert.equal(updateDevice(initialDevices,'ac',{value:99})[2].value,30,'温度限制在16–30度');
+const offline=updateDevice(initialDevices,'living-light',{online:false});
+assert.equal(updateDevice(offline,'living-light',{value:90})[0].value,60,'离线设备不可控制');
+assert.deepEqual(restoreDevices(JSON.stringify(changed)),changed,'保存内容必须能完整恢复');
+assert.deepEqual(restoreDevices('broken'),initialDevices,'损坏存储恢复默认值');
+assert.deepEqual(restoreDevices('[{"id":"living-light","value":"bad"}]'),initialDevices,'不合法数据不能进入设备状态');
+assert.equal(updateDevice(initialDevices,'curtain',{value:0})[3].on,false,'窗帘关闭状态与开合度一致');
+console.log('通过：控制、不可变更新、参数范围、离线拦截、恢复、损坏数据和窗帘状态。');

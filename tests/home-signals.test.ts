@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import {initialDevices} from '../src/home/state';
+import {deviceSignal} from '../src/home/signals';
+const d=initialDevices[1];
+assert.equal(deviceSignal(d,{...d,on:true}),'on');
+assert.equal(deviceSignal({...d,on:true},d),'off');
+assert.equal(deviceSignal(d,{...d,value:50}),'adjust');
+assert.equal(deviceSignal(d,{...d,on:true,value:50}),'on','同时开启和调节时优先显示开关变化');
+assert.equal(deviceSignal(d,d),'unchanged');
+assert.equal(deviceSignal(d,{...d,on:true},false),'failed');
+console.log('通过：开启绿灯、关闭红灯、调参蓝灯、无变化与失败区分。');
