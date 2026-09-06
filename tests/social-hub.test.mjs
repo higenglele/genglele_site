@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import {existsSync} from 'node:fs';
+import {pathToFileURL} from 'node:url';
+import {resolve} from 'node:path';
+const file=resolve('public/assets/demos/social-hub/navigation.mjs');
+assert.ok(existsSync(file), 'Demo需要提供可独立打开和嵌入切换的导航');
+const {resolveView,acceptMessage}=await import(pathToFileURL(file));
+for(const view of ['accounts','publish','inbox','dashboard','ai']) assert.equal(resolveView('#'+view),view);
+assert.equal(resolveView('#unknown'),'dashboard');
+assert.equal(resolveView(''),'dashboard');
+const origin='https://example.com';
+assert.equal(acceptMessage({origin,data:{type:'social-hub:navigate',view:'ai'}},origin),'ai');
+assert.equal(acceptMessage({origin:'https://other.com',data:{type:'social-hub:navigate',view:'ai'}},origin),null);
+assert.equal(acceptMessage({origin,data:{type:'social-hub:navigate',view:'unknown'}},origin),null);
+assert.equal(acceptMessage({origin,data:null},origin),null);
+assert.equal(acceptMessage({origin,data:{type:'unrelated',view:'ai'}},origin),null);
+console.log('通过：五模块深链接、默认页、嵌入消息来源与模块校验。');

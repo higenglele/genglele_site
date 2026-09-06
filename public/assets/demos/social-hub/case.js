@@ -1,0 +1,11 @@
+import {views} from './navigation.mjs';
+const descriptions={accounts:['01','账号汇总','搜索和筛选账号，模拟添加、修改负责人或重新连接。账号状态会同步影响发布选择。'],publish:['02','批量发布','选择多个账号模拟发布，查看逐账号结果并重试失败项。定时任务到期后手动执行，历史记录可追溯。'],inbox:['03','私信整合','按平台和未读筛选12个模拟会话；打开即标记已读，回复和草稿保存在对应会话。'],dashboard:['04','数据看板','切换7天、30天和平台查看指标、趋势与排行。成功发布按账号计入，失败重试不会重复统计。'],ai:['05','AI 内容生成','输入主题、选择平台和风格，体验模板生成与变体；编辑草稿后，一键带入批量发布。']};
+const frame=document.querySelector('#demo-frame');let current='dashboard';
+const tabs=document.querySelector('#case-tabs');
+tabs.innerHTML=views.map(view=>`<button type="button" id="case-tab-${view}" role="tab" aria-controls="module-description" data-view="${view}">${descriptions[view][1]}</button>`).join('');
+function select(view,send=false){if(!views.includes(view))return;current=view;const [number,title,copy]=descriptions[view];document.querySelector('#module-no').textContent=number;document.querySelector('#module-title').textContent=title;document.querySelector('#module-copy').textContent=copy;document.querySelector('#window-title').textContent=title;document.querySelector('#module-description').setAttribute('aria-labelledby',`case-tab-${view}`);document.querySelector('#open-full').href=`dashboard-demo.html#${view}`;tabs.querySelectorAll('button').forEach(b=>{b.setAttribute('aria-selected',String(b.dataset.view===view));b.tabIndex=b.dataset.view===view?0:-1;});if(send)frame.contentWindow.postMessage({type:'social-hub:navigate',view},location.origin);}
+document.querySelectorAll('[data-start]').forEach(link=>link.addEventListener('click',()=>select(link.dataset.start,true)));
+tabs.addEventListener('click',e=>{const b=e.target.closest('button');if(b)select(b.dataset.view,true);});
+tabs.addEventListener('keydown',e=>{if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;e.preventDefault();let i=views.indexOf(current);i=e.key==='Home'?0:e.key==='End'?views.length-1:(i+(e.key==='ArrowRight'?1:-1)+views.length)%views.length;select(views[i],true);document.querySelector(`#case-tab-${views[i]}`).focus();});
+window.addEventListener('message',e=>{if(e.origin===location.origin&&e.source===frame.contentWindow&&e.data?.type==='social-hub:view'&&views.includes(e.data.view)){select(e.data.view);document.querySelector('#embed-status').textContent='工作台已就绪 · 操作自动保存在当前浏览器';}});
+frame.addEventListener('load',()=>select(current,true));select(current);

@@ -1,0 +1,16 @@
+import assert from 'node:assert/strict';
+import {existsSync} from 'node:fs';
+import {resolve} from 'node:path';
+import {pathToFileURL} from 'node:url';
+const path=resolve('public/assets/demos/social-hub/inbox.mjs');assert.ok(existsSync(path),'需要可保存的私信会话与未读状态');
+const {initialInbox,unreadCount,filterConversations,openConversation,replyToConversation,normalizeInbox}=await import(pathToFileURL(path));
+const {baseline,saveState,loadState,removeAccount}=await import(pathToFileURL(resolve('public/assets/demos/social-hub/accounts.mjs')));
+const initial=initialInbox();assert.equal(initial.conversations.length,12);assert.equal(unreadCount(initial),5);
+assert.ok(filterConversations(initial,{platform:'抖音',unreadOnly:true}).every(c=>c.account.platform==='抖音'&&c.unread));
+const c=initial.conversations[0];const opened=openConversation(initial,c.id);assert.equal(unreadCount(opened),4);assert.equal(unreadCount(initial),5);assert.equal(unreadCount(openConversation(opened,c.id)),4);
+assert.throws(()=>replyToConversation(opened,c.id,'  ',baseline().accounts,1));
+const replied=replyToConversation(opened,c.id,'回复\n仅当前会话',baseline().accounts,2);assert.equal(replied.conversations[0].messages.length,c.messages.length+1);assert.equal(replied.conversations[1].messages.length,initial.conversations[1].messages.length);assert.equal(replied.conversations[0].messages.at(-1).body,'回复\n仅当前会话');assert.equal(replied.conversations[0].messages.at(-1).direction,'sent');
+assert.throws(()=>replyToConversation(opened,'missing','回复',baseline().accounts,2));
+const removed=removeAccount({...baseline(),inbox:replied},c.account.id);assert.equal(removed.inbox.conversations[0].account.name,c.account.name);assert.throws(()=>replyToConversation(replied,c.id,'回复',removed.accounts,3));
+let raw;const storage={setItem:(_,v)=>raw=v,getItem:()=>raw};saveState({...baseline(),inbox:replied},storage);assert.deepEqual(loadState(storage).state.inbox,replied);assert.deepEqual(normalizeInbox({conversations:[{}]}),initialInbox());assert.deepEqual(baseline().inbox,initial);
+console.log('通过：12会话/5未读、组合筛选、已读幂等、回复隔离、空白拦截、账号快照和刷新重置。');

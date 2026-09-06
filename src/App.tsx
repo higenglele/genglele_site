@@ -68,8 +68,16 @@ type ProjectCardData = {
 const projectCards: ProjectCardData[] = [
   {
     number: "01",
-    icon: WORK_ICONS[0],
-    items: ["项目背景待补充", "我的职责待补充", "产品过程待补充", "结果复盘待补充"],
+    title: "聚合 · 自媒体运营工作台",
+    subtitle: "账号、内容与反馈，在一处协同",
+    cover: "/assets/demos/social-hub/cover.png",
+    href: "/assets/demos/social-hub/index.html",
+    linkLabel: "查看案例与 Demo",
+    items: [
+      "统一管理账号 · AI 模板创作与草稿流转",
+      "多账号模拟发布 · 失败重试 · 私信回复",
+      "数据看板联动 · 可交互产品设计 Demo",
+    ],
   },
   {
     number: "02",
