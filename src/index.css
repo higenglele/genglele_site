@@ -73,6 +73,28 @@ a {
 .about-intro { color: #c7c6b9; margin: 1.75rem 0 1rem; }
 .about-philosophy { color: #aaa99e; margin: 0; }
 .about-experiences { list-style: none; padding: 0; margin: 0; }
+/* Hover feedback stays separate from Framer Motion's entrance transform. */
+.about-experience { border-radius: 10px; }
+.experience-number, .experience-header h3, .experience-header h3 span { transition: color 240ms ease; }
+.project-hover-grid, .about-experiences, .notes-list { isolation: isolate; }
+.project-hover-card, .about-experience, .notes-list > .note-row { position: relative; transition: filter 260ms ease, translate 300ms ease, scale 300ms ease, box-shadow 300ms ease, background-color 240ms ease; }
+.project-hover-card:focus-within { z-index: 2; box-shadow: 0 0 0 2px #e89a62; }
+@media (hover: hover) and (pointer: fine) {
+  .about-experience:hover { background-color: rgba(232, 154, 98, .065); box-shadow: 12px 0 rgba(232, 154, 98, .065), -12px 0 rgba(232, 154, 98, .065); }
+  .about-experience:hover .experience-number,
+  .about-experience:hover .experience-header h3,
+  .about-experience:hover .experience-header h3 span { color: #e89a62; }
+  .project-hover-grid:has(> .project-hover-card:hover) > .project-hover-card:not(:hover):not(:focus-within),
+  .about-experiences:has(> .about-experience:hover) > .about-experience:not(:hover),
+  .notes-list:has(> .note-row:hover) > .note-row:not(:hover):not(:focus-visible) { filter: brightness(.55); }
+  .project-hover-card:hover, .about-experience:hover, .notes-list > .note-row:hover { z-index: 2; translate: 0 -6px; scale: 1.025; }
+  .project-hover-card:hover, .notes-list > .note-row:hover { box-shadow: 0 16px 36px rgba(0, 0, 0, .3); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .about-experience, .experience-number, .experience-header h3, .experience-header h3 span,
+  .project-hover-card, .notes-list > .note-row { transition: none; }
+  .project-hover-card:hover, .about-experience:hover, .notes-list > .note-row:hover { translate: none; scale: none; }
+}
 .about-experience { display: grid; grid-template-columns: 2rem minmax(0, 1fr); gap: 1.75rem; padding: 2rem 0 2.75rem; border-bottom: 1px solid #2b2b27; }
 .about-experience:first-child { padding-top: .25rem; }
 .about-experience + .about-experience { padding-top: 2.75rem; }

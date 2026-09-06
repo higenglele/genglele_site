@@ -108,7 +108,7 @@ function ProjectCard({
 
   return (
     <motion.article
-      className="group flex min-h-[360px] flex-col justify-between rounded-2xl bg-[#212121] p-5 sm:min-h-[400px] lg:min-h-0"
+      className="project-hover-card group flex min-h-[360px] flex-col justify-between rounded-2xl bg-[#212121] p-5 sm:min-h-[400px] lg:min-h-0"
       initial={{ opacity: 0, scale: 0.95 }}
       animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.75, delay: index * 0.15, ease: cardEase }}
@@ -334,9 +334,9 @@ function Works() {
           </p>
         </header>
 
-        <div ref={cardsRef} className="grid grid-cols-1 gap-3 sm:gap-2 md:grid-cols-2 md:gap-1 lg:h-[480px] lg:grid-cols-4">
+        <div ref={cardsRef} className="project-hover-grid grid grid-cols-1 gap-3 sm:gap-2 md:grid-cols-2 md:gap-1 lg:min-h-[480px] lg:grid-cols-4">
           <motion.article
-            className="relative min-h-[420px] overflow-hidden rounded-2xl md:min-h-[440px] lg:min-h-0"
+            className="project-hover-card relative min-h-[420px] overflow-hidden rounded-2xl md:min-h-[440px] lg:min-h-0"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={cardsInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.75, ease: cardEase }}
