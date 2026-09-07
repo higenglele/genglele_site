@@ -1,3 +1,4 @@
+import { BackgroundVideo } from "./BackgroundVideo";
 import { HomeApp } from "./home/HomeApp";
 import { ProductPage } from "./home/ProductPage";
 import { useEffect, useRef, useState } from "react";
@@ -8,11 +9,9 @@ import {
 } from "framer-motion";
 import { ArrowRight, Check } from "lucide-react";
 
-const HERO_VIDEO =
-  "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260405_170732_8a9ccda6-5cff-4628-b164-059c500a2b41.mp4";
+const HERO_VIDEO = "/videos/hero.mp4";
 
-const WORK_VIDEO =
-  "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260406_133058_0504132a-0cf3-4450-a370-8ea3b05c95d4.mp4";
+const WORK_VIDEO = "/videos/work.mp4";
 
 const WORK_ICONS = [
   "https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260405_171918_4a5edc79-d78f-4637-ac8b-53c43c220606.png&w=1280&q=85",
@@ -200,15 +199,7 @@ function Hero() {
   return (
     <section id="home" className="h-screen bg-black p-4 md:p-6">
       <div className="relative h-full overflow-hidden rounded-2xl md:rounded-[2rem]">
-        <video
-          className="absolute inset-0 h-full w-full object-cover"
-          src={HERO_VIDEO}
-          autoPlay
-          loop
-          muted
-          playsInline
-          aria-hidden="true"
-        />
+        <BackgroundVideo src={HERO_VIDEO} poster="/videos/hero.jpg" priority />
         <div className="noise-overlay pointer-events-none absolute inset-0 opacity-[0.7] mix-blend-overlay" />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/60" />
 
@@ -349,15 +340,7 @@ function Works() {
             animate={cardsInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.75, ease: cardEase }}
           >
-            <video
-              className="absolute inset-0 h-full w-full object-cover"
-              src={WORK_VIDEO}
-              autoPlay
-              loop
-              muted
-              playsInline
-              aria-hidden="true"
-            />
+            <BackgroundVideo src={WORK_VIDEO} poster="/videos/work.jpg" active={cardsInView} />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/10" />
             <div className="absolute inset-x-0 bottom-0 p-5">
             </div>

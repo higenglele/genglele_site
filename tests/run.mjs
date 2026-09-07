@@ -8,7 +8,7 @@ try {
  const files=(await readdir('tests')).filter(f=>/\.test\.(ts|mjs)$/.test(f));
  for(const file of files){
   const output=join(temp,file.replace(/\.ts$/,'.mjs'));
-  await build({entryPoints:[resolve('tests',file)],outfile:output,bundle:true,platform:'node',format:'esm'});
+  await build({entryPoints:[resolve('tests',file)],outfile:output,bundle:true,platform:'node',format:'esm',jsx:'automatic'});
   const result=spawnSync(process.execPath,[output],{stdio:'inherit'});
   if(result.status!==0)process.exitCode=1;
  }
