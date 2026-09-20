@@ -241,7 +241,7 @@ function Hero() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.5, ease: easeOut }}
             >
-              我是一名AI产品经理，关注需求识别、产品设计与价值验证，希望把复杂的AI能力转化为清楚、可用的产品体验。
+              我是一名 AI 产品经理，专注智能客服 Agent、RAG 知识库与 AI 搜索评测，从真实业务问题出发，让 AI 回答更可靠、信息获取更高效。
             </motion.p>
 
             <motion.a
@@ -273,8 +273,8 @@ function About() {
           <div className="about-identity">
             <span className="about-caption">关于我</span>
             <p className="about-name">耿乐<span>AI 产品经理</span></p>
-            <p className="about-intro">3 年 AI 产品经验，专注 Agent、智能工作流与数据质量。</p>
-            <p className="about-philosophy">从真实业务问题出发，通过原型验证与效果评测，将 AI 能力转化为可用的产品。</p>
+            <p className="about-intro">3 年 AI 产品与搜索数据运营经验，专注 Agent、RAG 知识库与模型效果评测。</p>
+            <p className="about-philosophy">围绕用户场景设计工作流与检索策略，结合效果评测和反馈，持续优化产品体验。</p>
           </div>
         </header>
 
@@ -283,14 +283,20 @@ function About() {
             <span className="experience-number" aria-hidden="true">01</span>
             <article>
               <header className="experience-header">
-                <h3>腾讯云雀信息技术有限公司<span>AI 产品经理</span></h3>
-                <p className="experience-date"><time dateTime="2025-07">2025.07</time> — <time dateTime="2026-07">2026.07</time></p>
+                <h3>小佩网络科技有限公司<span>AI 产品经理</span></h3>
+                <p className="experience-date"><time dateTime="2024-07">2024.07</time> — <time dateTime="2026-07">2026.07</time></p>
               </header>
-              <p className="experience-focus">智能标注平台 · 数据质量</p>
-              <p className="experience-description">负责智能标注平台的功能开发与优化，通过用户调研和小样本实验，推动 AI 预标注、人工校验与自动质量评估落地，提升大规模数据生产的效率与质量。</p>
+              <p className="experience-focus">电商智能客服平台 · Agent</p>
+              <p className="experience-description">围绕消费者咨询与售后接待，设计 Workflow 意图分流、FAQ + RAG 混合检索与证据校验机制，证据不足时转人工；建立评估体系，持续优化提示词和检索策略。</p>
               <div className="experience-results">
-                <p><strong>约 8 倍</strong><span>同批数据下，标注效率较纯人工提升</span></p>
-                <p><strong>60% → 95%</strong><span>质量评估覆盖率</span></p>
+                <p><strong>55% → 80%</strong><span>有效自动解决率</span></p>
+                <p><strong>≤ 2%</strong><span>最终回答错误率</span></p>
+              </div>
+              <p className="experience-focus">企业内部智能知识库 · RAG</p>
+              <p className="experience-description">面向产品、售后、物流及营销资料，梳理 5 类候选知识源，设计 BM25 与向量双路召回、RRF 融合及 Cross-Encoder 重排序；结合业务评测与员工反馈，持续补齐知识、优化检索。</p>
+              <div className="experience-results">
+                <p><strong>10 分钟 → 3 分钟</strong><span>覆盖约 200 名员工，成功任务的平均知识查找耗时缩短 70%</span></p>
+                <p><strong>≥ 90%</strong><span>可用答案率，任务成功率保持不降</span></p>
               </div>
             </article>
           </li>
@@ -298,14 +304,14 @@ function About() {
             <span className="experience-number" aria-hidden="true">02</span>
             <article>
               <header className="experience-header">
-                <h3>湖北升思科技股份有限公司<span>AI 产品经理</span></h3>
-                <p className="experience-date"><time dateTime="2023-07">2023.07</time> — <time dateTime="2025-07">2025.07</time></p>
+                <h3>腾讯云雀信息技术有限公司<span>AI 搜索数据运营</span></h3>
+                <p className="experience-date"><time dateTime="2023-07">2023.07</time> — <time dateTime="2024-07">2024.07</time></p>
               </header>
-              <p className="experience-focus">新人孵化平台 · AI 选题策划 Agent</p>
-              <p className="experience-description">围绕新媒体运营的培训与策划瓶颈，负责新人账号孵化陪跑管理平台和 AI 选题策划 Agent。通过能力画像、知识库检索与选题工作流，将运营经验沉淀为可复用的产品能力，并持续通过 A/B 对比验证效果。</p>
+              <p className="experience-focus">AI 搜索大模型效果评测与数据质量优化</p>
+              <p className="experience-description">围绕小微 AI 搜索，针对需求理解偏差、多轮上下文衔接不足、信息错误及资源匹配不准确等问题，开展真实用户日志评测、竞品横向对比与模型版本回归评测；联合产品和研发团队完善质量评估标准、问题标签与高质量标注数据，支持模型训练和搜索体验优化。</p>
               <div className="experience-results">
-                <p><strong>缩短约 50%</strong><span>新人独立上岗周期</span></p>
-                <p><strong>提升约 3 倍</strong><span>Agent 辅助选题下，人均可支撑账号数</span></p>
+                <p><strong>评测驱动迭代</strong><span>持续优化回答准确性、需求匹配与表达清晰度</span></p>
+                <p><strong>完善质量标准</strong><span>提升质量判断一致性与问题定位精细度</span></p>
               </div>
             </article>
           </li>
